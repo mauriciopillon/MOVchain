@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: asset
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: asset
+  template:
+    metadata:
+      labels:
+        app: asset
+    spec:
+      containers:
+        - name: chaincode
+          image: localhost:5000/mychaincode:latest
+          ports:
+            - containerPort: 7052
+          env:
+            - name: CORE_CHAINCODE_ID_NAME
+              value: "asset:1.0"
+            - name: CORE_PEER_ADDRESS
+              value: "org1-peer0.default:7051" 
+            - name: CORE_PEER_CHAINCODELISTENADDRESS
+              value: "0.0.0.0:7052"  # Listen port for chaincode
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: asset
+spec:
+  ports:
+    - port: 7052
+      targetPort: 7052
+  selector:
+    app: asset
