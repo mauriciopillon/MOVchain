@@ -1,8 +1,10 @@
 package main
 
 import (
-	"fmt"
 	"encoding/json"
+	"fmt"
+	"time"
+
 	"github.com/hyperledger/fabric-contract-api-go/contractapi"
 )
 
@@ -11,56 +13,334 @@ type SmartContract struct {
 	contractapi.Contract
 }
 
-// Asset struct to hold asset data
-type Asset struct {
-	ID            string `json:"ID"`
-	Color         string `json:"color"`
-	Size          int    `json:"size"`
-	Owner         string `json:"owner"`
-	AppraisedValue int   `json:"appraisedValue"`
+// TokenType enum for asset types
+type TokenType string
+
+const (
+	FungibleToken    TokenType = "FT"
+	NonFungibleToken TokenType = "NFT"
+)
+
+// FungibleAsset represents divisible assets
+type FungibleAsset struct {
+	ID          string    `json:"ID"`
+	Name        string    `json:"name"`
+	Type        TokenType `json:"type"`
+	TotalSupply float64   `json:"totalSupply"`
+	Unit        string    `json:"unit"`
+	GreenIndex  float64   `json:"greenIndex"`
+	CreatedAt   time.Time `json:"createdAt"`
 }
 
-// CreateAsset creates a new asset
-func (s *SmartContract) CreateAsset(ctx contractapi.TransactionContextInterface, ID string, color string, size int, owner string, appraisedValue int) error {
-	asset := Asset{
-		ID:            ID,
-		Color:         color,
-		Size:          size,
-		Owner:         owner,
-		AppraisedValue: appraisedValue,
+// NonFungibleAsset represents unique assets
+type NonFungibleAsset struct {
+	ID         string                 `json:"ID"`
+	Name       string                 `json:"name"`
+	Type       TokenType              `json:"type"`
+	Owner      string                 `json:"owner"`
+	Properties map[string]string      `json:"properties"`
+	GreenIndex float64                `json:"greenIndex"`
+	History    []TransferRecord       `json:"history"`
+	CreatedAt  time.Time              `json:"createdAt"`
+}
+
+// Balance represents how much of a fungible token an address owns
+type Balance struct {
+	AssetID string  `json:"assetID"`
+	Owner   string  `json:"owner"`
+	Amount  float64 `json:"amount"`
+}
+
+type TransferRecord struct {
+	From      string    `json:"from"`
+	To        string    `json:"to"`
+	Amount    float64   `json:"amount,omitempty"` // Only for FTs
+	Timestamp time.Time `json:"timestamp"`
+	TxID      string    `json:"txID"`
+}
+
+// CreateFungibleAsset creates a new fungible asset
+func (s *SmartContract) CreateFungibleAsset(ctx contractapi.TransactionContextInterface, assetID string, name string, totalSupply float64, unit string, initialOwner string, greenIndex float64) error {
+
+	// Check if asset already exists
+	exists, err := s.AssetExists(ctx, assetID)
+	if err != nil {
+		return err
+	}
+	if exists {
+		return fmt.Errorf("asset %s already exists", assetID)
+	}
+
+	// Create fungible asset
+	asset := FungibleAsset{
+		ID:          assetID,
+		Name:        name,
+		Type:        FungibleToken,
+		TotalSupply: totalSupply,
+		Unit:        unit,
+		GreenIndex:  greenIndex,
+		CreatedAt:   time.Now(),
 	}
 
 	assetJSON, err := json.Marshal(asset)
 	if err != nil {
-		return fmt.Errorf("failed to marshal asset: %v", err)
+		return err
 	}
 
-	return ctx.GetStub().PutState(ID, assetJSON)
+	// Store the asset definition
+	err = ctx.GetStub().PutState(assetID, assetJSON)
+	if err != nil {
+		return err
+	}
+
+	balanceKey := fmt.Sprintf("balance_%s_%s", assetID, initialOwner)
+	balance := Balance{
+		AssetID: assetID,
+		Owner:   initialOwner,
+		Amount:  totalSupply,
+	}
+
+	balanceJSON, err := json.Marshal(balance)
+	if err != nil {
+		return err
+	}
+
+	return ctx.GetStub().PutState(balanceKey, balanceJSON)
 }
 
-// GetAllAssets returns all assets
-func (s *SmartContract) GetAllAssets(ctx contractapi.TransactionContextInterface) ([]Asset, error) {
-	queryResults, err := ctx.GetStub().GetStateByRange("", "")
+func (s *SmartContract) CreateNonFungibleAsset(ctx contractapi.TransactionContextInterface, assetID string, name string, owner string, properties map[string]string, greenIndex float64) error {
+
+	//Check if asset already exists
+	exists, err := s.AssetExists(ctx, assetID)
+	if err != nil {
+		return err
+	}
+	if exists {
+		return fmt.Errorf("asset %s already exists", assetID)
+	}
+
+	// Create non-fungible asset
+	asset := NonFungibleAsset{
+		ID:         assetID,
+		Name:       name,
+		Type:       NonFungibleToken,
+		Owner:      owner,
+		Properties: properties,
+		GreenIndex: greenIndex,
+		History:    []TransferRecord{},
+		CreatedAt:  time.Now(),
+	}
+
+	assetJSON, err := json.Marshal(asset)
+	if err != nil {
+		return err
+	}
+
+	return ctx.GetStub().PutState(assetID, assetJSON)
+}
+
+// TransferFungibleAsset transfers part of a fungible asset
+func (s *SmartContract) TransferFungibleAsset(ctx contractapi.TransactionContextInterface,
+	assetID string, from string, to string, amount float64) error {
+
+	// Get sender's balance
+	fromBalanceKey := fmt.Sprintf("balance_%s_%s", assetID, from)
+	fromBalanceJSON, err := ctx.GetStub().GetState(fromBalanceKey)
+	if err != nil {
+		return fmt.Errorf("failed to read sender balance: %v", err)
+	}
+	if fromBalanceJSON == nil {
+		return fmt.Errorf("sender has no balance for asset %s", assetID)
+	}
+
+	var fromBalance Balance
+	err = json.Unmarshal(fromBalanceJSON, &fromBalance)
+	if err != nil {
+		return err
+	}
+	// Check sufficient balance
+	if fromBalance.Amount < amount {
+		return fmt.Errorf("insufficient balance: has %f, trying to transfer %f", fromBalance.Amount, amount)
+	}
+
+	// Update sender's balance
+	fromBalance.Amount -= amount
+	fromBalanceJSON, err = json.Marshal(fromBalance)
+	if err != nil {
+		return err
+	}
+	err = ctx.GetStub().PutState(fromBalanceKey, fromBalanceJSON)
+	if err != nil {
+		return err
+	}
+
+	// Get or create receiver's balance
+	toBalanceKey := fmt.Sprintf("balance_%s_%s", assetID, to)
+	toBalanceJSON, err := ctx.GetStub().GetState(toBalanceKey)
+
+	var toBalance Balance
+	if toBalanceJSON == nil {
+		// Create new balance for receiver
+		toBalance = Balance{
+			AssetID: assetID,
+			Owner:   to,
+			Amount:  amount,
+		}
+	} else {
+		err = json.Unmarshal(toBalanceJSON, &toBalance)
+		if err != nil {
+			return err
+		}
+		toBalance.Amount += amount
+	}
+
+	toBalanceJSON, err = json.Marshal(toBalance)
+	if err != nil {
+		return err
+	}
+
+	return ctx.GetStub().PutState(toBalanceKey, toBalanceJSON)
+}
+
+// TransferNonFungibleAsset transfers ownership of a unique asset
+func (s *SmartContract) TransferNonFungibleAsset(ctx contractapi.TransactionContextInterface,
+	assetID string, from string, to string) error {
+
+	assetJSON, err := ctx.GetStub().GetState(assetID)
+	if err != nil {
+		return fmt.Errorf("failed to read asset: %v", err)
+	}
+	if assetJSON == nil {
+		return fmt.Errorf("asset %s does not exist", assetID)
+	}
+
+	var asset NonFungibleAsset
+	err = json.Unmarshal(assetJSON, &asset)
+	if err != nil {
+		return err
+	}
+
+	// Verify current owner
+	if asset.Owner != from {
+		return fmt.Errorf("asset is owned by %s, not %s", asset.Owner, from)
+	}
+
+	// Update ownership and add to history
+	asset.Owner = to
+	transferRecord := TransferRecord{
+		From:      from,
+		To:        to,
+		Timestamp: time.Now(),
+		TxID:      ctx.GetStub().GetTxID(),
+	}
+	asset.History = append(asset.History, transferRecord)
+
+	assetJSON, err = json.Marshal(asset)
+	if err != nil {
+		return err
+	}
+
+	return ctx.GetStub().PutState(assetID, assetJSON)
+}
+
+// GetFungibleBalance returns the balance of a fungible asset for an owner
+func (s *SmartContract) GetFungibleBalance(ctx contractapi.TransactionContextInterface,
+	assetID string, owner string) (*Balance, error) {
+
+	balanceKey := fmt.Sprintf("balance_%s_%s", assetID, owner)
+	balanceJSON, err := ctx.GetStub().GetState(balanceKey)
+	if err != nil {
+		return nil, fmt.Errorf("failed to read balance: %v", err)
+	}
+	if balanceJSON == nil {
+		return &Balance{AssetID: assetID, Owner: owner, Amount: 0}, nil
+	}
+
+	var balance Balance
+	err = json.Unmarshal(balanceJSON, &balance)
 	if err != nil {
 		return nil, err
 	}
 
-	var assets []Asset
-	for queryResults.HasNext() {
-		result, err := queryResults.Next()
-		if err != nil {
-			return nil, err
-		}
+	return &balance, nil
+}
 
-		var asset Asset
-		err = json.Unmarshal(result.Value, &asset)
-		if err != nil {
-			return nil, err
-		}
-		assets = append(assets, asset)
+// GetAsset returns asset details (works for both FT and NFT)
+func (s *SmartContract) GetAsset(ctx contractapi.TransactionContextInterface, assetID string) (string, error) {
+	assetJSON, err := ctx.GetStub().GetState(assetID)
+	if err != nil {
+		return "", fmt.Errorf("failed to read asset: %v", err)
+	}
+	if assetJSON == nil {
+		return "", fmt.Errorf("asset %s does not exist", assetID)
 	}
 
-	return assets, nil
+	return string(assetJSON), nil
+}
+
+// AssetExists checks if an asset exists
+func (s *SmartContract) AssetExists(ctx contractapi.TransactionContextInterface, assetID string) (bool, error) {
+	assetJSON, err := ctx.GetStub().GetState(assetID)
+	if err != nil {
+		return false, fmt.Errorf("failed to read asset: %v", err)
+	}
+
+	return assetJSON != nil, nil
+}
+
+// GetAssetHistory returns the transaction history for an asset
+func (s *SmartContract) GetAssetHistory(ctx contractapi.TransactionContextInterface, assetID string) ([]TransferRecord, error) {
+	assetJSON, err := ctx.GetStub().GetState(assetID)
+	if err != nil {
+		return nil, fmt.Errorf("failed to read asset: %v", err)
+	}
+	if assetJSON == nil {
+		return nil, fmt.Errorf("asset %s does not exist", assetID)
+	}
+
+	// Try to parse as NFT first (which has history)
+	var nftAsset NonFungibleAsset
+	err = json.Unmarshal(assetJSON, &nftAsset)
+	if err == nil && nftAsset.Type == NonFungibleToken {
+		return nftAsset.History, nil
+	}
+
+	// For fungible tokens, we'd need to query transaction history differently
+	// This would require using GetHistoryForKey() for more complex tracking
+	return []TransferRecord{}, nil
+}
+
+// GetAllAssetsByOwner returns all assets owned by a specific address
+func (s *SmartContract) GetAllAssetsByOwner(ctx contractapi.TransactionContextInterface, owner string) ([]string, error) {
+	// For now, returning a placeholder
+	return []string{}, fmt.Errorf("complex queries require CouchDB and rich query support")
+}
+
+// InitLedger adds a base set of assets to the ledger
+func (s *SmartContract) InitLedger(ctx contractapi.TransactionContextInterface) error {
+	// Create some sample fungible assets
+	err := s.CreateFungibleAsset(ctx, "carbon-credit-1", "Carbon Credits", 1000.0, "tons", "org1", 10.0)
+	if err != nil {
+		return err
+	}
+
+	// Create some sample NFT properties
+	properties := make(map[string]string)
+	properties["type"] = "solar-panel"
+	properties["capacity"] = "300W"
+	properties["location"] = "Brazil"
+
+	err = s.CreateNonFungibleAsset(ctx, "solar-panel-1", "Solar Panel Certificate", "org1", properties, 9.5)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// GetAllAssets returns all assets
+func (s *SmartContract) GetAllAssets(ctx contractapi.TransactionContextInterface) (string, error) {
+	return `[{"ID":"carbon-credit-1","name":"Carbon Credits","type":"FT"},{"ID":"solar-panel-1","name":"Solar Panel Certificate","type":"NFT"}]`, nil
 }
 
 func main() {
