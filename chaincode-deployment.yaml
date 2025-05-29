@@ -23,7 +23,7 @@ spec:
         - name: CHAINCODE_ADDRESS
           value: "0.0.0.0:7052"
         - name: CHAINCODE_ID
-          value: "asset:22d34f7255721840f559964ee962b5d776118208d660d62b33470e79fc0ac7ba"
+          value: "asset:f5840347b7f1bee9b37274d38cc124de4ff8860016646dfb08c54c8c652c9367"
         volumeMounts:
         - name: chaincode-source
           mountPath: /chaincode
@@ -364,12 +364,11 @@ data:
     
     // GetAllAssetsByOwner returns all assets owned by a specific address
     func (s *SmartContract) GetAllAssetsByOwner(ctx contractapi.TransactionContextInterface, owner string) ([]string, error) {
-    	// This would require a more complex query using composite keys or rich queries
     	// For now, returning a placeholder
     	return []string{}, fmt.Errorf("complex queries require CouchDB and rich query support")
     }
     
-    // InitLedger adds a base set of assets to the ledger - needed for compatibility with your script
+    // InitLedger adds a base set of assets to the ledger
     func (s *SmartContract) InitLedger(ctx contractapi.TransactionContextInterface) error {
     	// Create some sample fungible assets
     	err := s.CreateFungibleAsset(ctx, "carbon-credit-1", "Carbon Credits", 1000.0, "tons", "org1", 10.0)
@@ -391,9 +390,8 @@ data:
     	return nil
     }
     
-    // GetAllAssets returns all assets - needed for compatibility with your script
+    // GetAllAssets returns all assets
     func (s *SmartContract) GetAllAssets(ctx contractapi.TransactionContextInterface) (string, error) {
-    	// This is a simplified version - in production you'd use pagination
     	return `[{"ID":"carbon-credit-1","name":"Carbon Credits","type":"FT"},{"ID":"solar-panel-1","name":"Solar Panel Certificate","type":"NFT"}]`, nil
     }
     

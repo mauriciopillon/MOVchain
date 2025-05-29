@@ -167,7 +167,7 @@ info "Creating Main Channel..."
 
 export IDENT_12=$(printf "%16s" "")
 
- tls CA certificate
+#tls CA certificate
 export ORDERER_TLS_CERT=$(kubectl get fabriccas ord-ca -o=jsonpath='{.status.tlsca_cert}' | sed -e "s/^/${IDENT_12}/" )
 
 export ORDERER0_TLS_CERT=$(kubectl get fabricorderernodes ord-node1 -o=jsonpath='{.status.tlsCert}' | sed -e "s/^/${IDENT_12}/" )

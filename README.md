@@ -238,7 +238,7 @@ export PATH="$PATH:$PWD/istio-${ISTIO_VERSION}/bin"
 wait_for_running() {
   local resource=$1
   sleep 30
-  kubectl wait --timeout=180s --for=condition=Running "$resource" --all
+  kubectl wait --timeout=240s --for=condition=Running "$resource" --all
   sleep 5
 }
 
@@ -375,7 +375,7 @@ info "Creating Main Channel..."
 
 export IDENT_12=$(printf "%16s" "")
 
-# tls CA certificate
+ tls CA certificate
 export ORDERER_TLS_CERT=$(kubectl get fabriccas ord-ca -o=jsonpath='{.status.tlsca_cert}' | sed -e "s/^/${IDENT_12}/" )
 
 export ORDERER0_TLS_CERT=$(kubectl get fabricorderernodes ord-node1 -o=jsonpath='{.status.tlsCert}' | sed -e "s/^/${IDENT_12}/" )
@@ -492,10 +492,11 @@ sleep 5
 tar cfz code.tar.gz connection.json
 tar cfz chaincode.tgz metadata.json code.tar.gz
 
-export PACKAGE_ID=$(kubectl hlf chaincode calculatepackageid --path=chaincode.tgz --language=node --label=$CHAINCODE_LABEL)
+export PACKAGE_ID=$(kubectl hlf chaincode calculatepackageid --path=chaincode.tgz --language=golang --label=$CHAINCODE_LABEL)
 
 info "PACKAGE_ID=$PACKAGE_ID"
 
+info "Installing chaincode on peers..."
 kubectl hlf chaincode install --path=./chaincode.tgz \
     --config=org1.yaml --language=golang --label=$CHAINCODE_LABEL --user=org1-admin-default --peer=org1-peer0.default
 
@@ -509,20 +510,76 @@ kubectl hlf chaincode install --path=./chaincode.tgz \
     --config=org2.yaml --language=golang --label=$CHAINCODE_LABEL --user=org2-admin-default --peer=org2-peer1.default
 sleep 5
 
+info "Deploying chaincode as external service..."
+# Create chaincode deployment
+cat << DEPLOYMENT-EOF > chaincode-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ${CHAINCODE_NAME}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ${CHAINCODE_NAME}
+  template:
+    metadata:
+      labels:
+        app: ${CHAINCODE_NAME}
+    spec:
+      containers:
+      - name: chaincode
+        image: golang:1.19-alpine
+        command: ["/bin/sh"]
+        args: ["-c", "cd /chaincode && go mod tidy && go run chaincode.go"]
+        ports:
+        - containerPort: 7052
+        env:
+        - name: CHAINCODE_ADDRESS
+          value: "0.0.0.0:7052"
+        - name: CHAINCODE_ID
+          value: "${PACKAGE_ID}"
+        volumeMounts:
+        - name: chaincode-source
+          mountPath: /chaincode
+      volumes:
+      - name: chaincode-source
+        configMap:
+          name: ${CHAINCODE_NAME}-source
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ${CHAINCODE_NAME}
+spec:
+  selector:
+    app: ${CHAINCODE_NAME}
+  ports:
+  - protocol: TCP
+    port: 7052
+    targetPort: 7052
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ${CHAINCODE_NAME}-source
+data:
+  chaincode.go: |
+$(cat ./contract/contract.go | sed 's/^/    /')
+  go.mod: |
+$(cat ./contract/go.mod | sed 's/^/    /')
+DEPLOYMENT-EOF
+
+kubectl apply -f chaincode-deployment.yaml
+
+info "Waiting for chaincode service to be ready..."
+kubectl wait --for=condition=available --timeout=300s deployment/${CHAINCODE_NAME}
+sleep 10
 
 info "Checking chaincode installation..."
 kubectl hlf chaincode queryinstalled --config=org1.yaml --user=org1-admin-default --peer=org1-peer0.default
 kubectl hlf chaincode queryinstalled --config=org2.yaml --user=org2-admin-default --peer=org2-peer0.default
 sleep 3
-
-info "Deploying chaincode container on cluster..."
-kubectl hlf externalchaincode sync --image=kfsoftware/chaincode-external:latest \
-    --name=$CHAINCODE_NAME \
-    --namespace=default \
-    --package-id=$PACKAGE_ID \
-    --tls-required=false \
-    --replicas=1
-sleep 5
 
 info "Approving chaincode..."
 
