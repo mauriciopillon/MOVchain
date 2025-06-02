@@ -1,19 +1,17 @@
 apiVersion: hlf.kungfusoftware.es/v1alpha1
 kind: FabricFollowerChannel
 metadata:
-  name: demo-org1msp
+  name: esg-channel
 spec:
   anchorPeers:
-    - host: org1-peer0.default
-      port: 7051
-    - host: org1-peer1.default
+    - host: montadora.default
       port: 7051
   hlfIdentity:
     secretKey: user.yaml
-    secretName: org1-admin
+    secretName: tier1-admin
     secretNamespace: default
-  mspId: Org1MSP
-  name: demo
+  mspId: Tier1MSP
+  name: esg-channel
   externalPeersToJoin: []
   orderers:
     - certificate: |
@@ -37,7 +35,5 @@ spec:
         -----END CERTIFICATE-----
       url: grpcs://ord-node1.default:7050
   peersToJoin:
-    - name: org1-peer0
-      namespace: default
-    - name: org1-peer1
+    - name: montadora
       namespace: default

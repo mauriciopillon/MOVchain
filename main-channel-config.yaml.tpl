@@ -1,14 +1,15 @@
 apiVersion: hlf.kungfusoftware.es/v1alpha1
 kind: FabricMainChannel
 metadata:
-  name: demo
+  name: esg-channel
 spec:
-  name: demo
+  name: esg-channel
   adminOrdererOrganizations:
     - mspID: OrdererMSP
   adminPeerOrganizations:
-    - mspID: Org1MSP
-    - mspID: Org2MSP
+    - mspID: Tier1MSP
+    - mspID: Tier2MSP
+    - mspID: Tier3MSP
   channelConfig:
     application:
       acls: null
@@ -96,11 +97,14 @@ ${ORDERER3_SIGN_CERT}
     policies: null
   externalOrdererOrganizations: []
   peerOrganizations:
-    - mspID: Org1MSP
-      caName: "org1-ca"
+    - mspID: Tier1MSP
+      caName: "tier1-ca"
       caNamespace: "default"
-    - mspID: Org2MSP
-      caName: "org2-ca"
+    - mspID: Tier2MSP
+      caName: "tier2-ca"
+      caNamespace: "default"
+    - mspID: Tier3MSP
+      caName: "tier3-ca"
       caNamespace: "default"
   identities:
     OrdererMSP:
@@ -111,9 +115,17 @@ ${ORDERER3_SIGN_CERT}
       secretKey: user.yaml
       secretName: orderer-admin-sign
       secretNamespace: default
-    Org1MSP:
+    Tier1MSP:
       secretKey: user.yaml
-      secretName: org1-admin
+      secretName: tier1-admin
+      secretNamespace: default
+    Tier2MSP:
+      secretKey: user.yaml
+      secretName: tier2-admin
+      secretNamespace: default
+    Tier3MSP:
+      secretKey: user.yaml
+      secretName: tier3-admin
       secretNamespace: default
   externalPeerOrganizations: []
   ordererOrganizations:
