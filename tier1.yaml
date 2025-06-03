@@ -23,27 +23,27 @@ organizations:
         cert:
           pem: |
             -----BEGIN CERTIFICATE-----
-            MIICZTCCAgugAwIBAgIUIYAdeblW8kvPsPa2A0CFxY+ieZcwCgYIKoZIzj0EAwIw
+            MIICZTCCAgugAwIBAgIUV9VsNAopUxy6wYoilTecDR9qNeswCgYIKoZIzj0EAwIw
             ajELMAkGA1UEBhMCRVMxETAPBgNVBAcTCEFsaWNhbnRlMREwDwYDVQQJEwhBbGlj
             YW50ZTEZMBcGA1UEChMQS3VuZyBGdSBTb2Z0d2FyZTENMAsGA1UECxMEVGVjaDEL
-            MAkGA1UEAxMCY2EwHhcNMjUwNjAxMTk1ODQ0WhcNMjYwNjAyMjMyNjAwWjApMQ4w
+            MAkGA1UEAxMCY2EwHhcNMjUwNjAxMTk1ODQ0WhcNMjYwNjAzMDAwMjAwWjApMQ4w
             DAYDVQQLEwVhZG1pbjEXMBUGA1UEAxMOZXhwbG9yZXItYWRtaW4wWTATBgcqhkjO
-            PQIBBggqhkjOPQMBBwNCAATNouzSMkZBQxNP/WAF7NgW48I8jQemcNnsW377F9VP
-            f6WxRGAMC5shk87g0K4dRt1Xf38yOS4mjlbRgT0b6iL+o4HPMIHMMA4GA1UdDwEB
-            /wQEAwIHgDAMBgNVHRMBAf8EAjAAMB0GA1UdDgQWBBSTNcaQDRf8UE4DvxyYTQHp
-            ZocovzArBgNVHSMEJDAigCDAH16Bd9vZ7JmReEtuXPnrQ4kpvP8qDaUQBlXi9Otx
+            PQIBBggqhkjOPQMBBwNCAAT9tajgSVQLam5IDLzQGKc7hrDHs5EliyMCJzBMxKFI
+            +wSWb0XjrAwrZEHiBXQuj2OfFiz7FAIqlWhHlp9i5Kavo4HPMIHMMA4GA1UdDwEB
+            /wQEAwIHgDAMBgNVHRMBAf8EAjAAMB0GA1UdDgQWBBQ44iGBrH4mOPI1Ke+dINZA
+            iXdeLjArBgNVHSMEJDAigCDAH16Bd9vZ7JmReEtuXPnrQ4kpvP8qDaUQBlXi9Otx
             JzBgBggqAwQFBgcIAQRUeyJhdHRycyI6eyJoZi5BZmZpbGlhdGlvbiI6IiIsImhm
             LkVucm9sbG1lbnRJRCI6ImV4cGxvcmVyLWFkbWluIiwiaGYuVHlwZSI6ImFkbWlu
-            In19MAoGCCqGSM49BAMCA0gAMEUCIQCzghkljOd9s/MTJ0FJ2A8uKL67TO5SJl3O
-            xCft1yX8cQIgSUOb+fqAr84d6GqNutc7JO/UnSdEM/V8SSKZ4ADDtA4=
+            In19MAoGCCqGSM49BAMCA0gAMEUCIQD1iTUrmlL9GeGwdEDh5v4rSqf/2kifX2zB
+            sf5cBBWEUAIgdmqc5AGAkKYSYQ15OQbMFxHCKXCLSjd0PDYNa/XM5tc=
             -----END CERTIFICATE-----
             
         key:
           pem: |
             -----BEGIN PRIVATE KEY-----
-            MIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0wawIBAQQggbIL4ewSMfmMkccQ
-            r1iFGdFeoK4dP3TXceZ7icDD3QGhRANCAATNouzSMkZBQxNP/WAF7NgW48I8jQem
-            cNnsW377F9VPf6WxRGAMC5shk87g0K4dRt1Xf38yOS4mjlbRgT0b6iL+
+            MIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0wawIBAQQgcUrUBCAuuPDUy/zx
+            uwWzZ8VB9hTaPks5chrTPq0akxehRANCAAT9tajgSVQLam5IDLzQGKc7hrDHs5El
+            iyMCJzBMxKFI+wSWb0XjrAwrZEHiBXQuj2OfFiz7FAIqlWhHlp9i5Kav
             -----END PRIVATE KEY-----
             
     peers:

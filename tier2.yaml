@@ -23,27 +23,27 @@ organizations:
         cert:
           pem: |
             -----BEGIN CERTIFICATE-----
-            MIICZDCCAgugAwIBAgIUOpqO7gvvL55QFNlMR/8qTYJ25y8wCgYIKoZIzj0EAwIw
+            MIICZTCCAgugAwIBAgIUSNN0jHdb816eiEJidp0q42xc4VwwCgYIKoZIzj0EAwIw
             ajELMAkGA1UEBhMCRVMxETAPBgNVBAcTCEFsaWNhbnRlMREwDwYDVQQJEwhBbGlj
             YW50ZTEZMBcGA1UEChMQS3VuZyBGdSBTb2Z0d2FyZTENMAsGA1UECxMEVGVjaDEL
-            MAkGA1UEAxMCY2EwHhcNMjUwNjAxMTk1NDU2WhcNMjYwNjAyMjMyNjAwWjApMQ4w
+            MAkGA1UEAxMCY2EwHhcNMjUwNjAxMTk1NDU2WhcNMjYwNjAzMDAwMzAwWjApMQ4w
             DAYDVQQLEwVhZG1pbjEXMBUGA1UEAxMOZXhwbG9yZXItYWRtaW4wWTATBgcqhkjO
-            PQIBBggqhkjOPQMBBwNCAAT/l/F3/O5mnJw5BrPtvbCeHa0fWlViYcxjNqAdq+cC
-            S1VU2LvZDfGHnKHvJNm5IehFTp/Zsxq5fHWd0Ub+wmbBo4HPMIHMMA4GA1UdDwEB
-            /wQEAwIHgDAMBgNVHRMBAf8EAjAAMB0GA1UdDgQWBBSbQr29EDacoan8swwTn+WN
-            Bh3NuzArBgNVHSMEJDAigCD4IasvLEzLDEZYlACHS70MznT7LkG47VnK7iMOj/p2
+            PQIBBggqhkjOPQMBBwNCAASTs/r/tf+hdnRtbT1nLlMQMUTIumyn1+xzDnu4E0wq
+            rubgBDtsPAgs+VRMgJADHmtJqMO4cFV52yxPazFUnYMco4HPMIHMMA4GA1UdDwEB
+            /wQEAwIHgDAMBgNVHRMBAf8EAjAAMB0GA1UdDgQWBBTPatRqiDPoK0hCle6W5Axo
+            uVSpvzArBgNVHSMEJDAigCD4IasvLEzLDEZYlACHS70MznT7LkG47VnK7iMOj/p2
             4DBgBggqAwQFBgcIAQRUeyJhdHRycyI6eyJoZi5BZmZpbGlhdGlvbiI6IiIsImhm
             LkVucm9sbG1lbnRJRCI6ImV4cGxvcmVyLWFkbWluIiwiaGYuVHlwZSI6ImFkbWlu
-            In19MAoGCCqGSM49BAMCA0cAMEQCIB0qY8VAhGcdfT5oRhZk0hmmlP150SpxQSqa
-            hEhWc+6uAiAqifOvN2au2qqTQpNLCQWvmS6a9EoYIGTtfUU6w1z2iA==
+            In19MAoGCCqGSM49BAMCA0gAMEUCIQDDAcZisgXaed5y2fYZ8W9nI4XItFuf+RS4
+            6iGpVBo/GQIgBjNEJZugZXP7isOWfOwQrBXnv/fFmzBREsudfAH7Nr4=
             -----END CERTIFICATE-----
             
         key:
           pem: |
             -----BEGIN PRIVATE KEY-----
-            MIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0wawIBAQQgBGeBBFV58Gp1T6fY
-            bp4xn9JYUUZSnHnr4rir6ujdcmahRANCAAT/l/F3/O5mnJw5BrPtvbCeHa0fWlVi
-            YcxjNqAdq+cCS1VU2LvZDfGHnKHvJNm5IehFTp/Zsxq5fHWd0Ub+wmbB
+            MIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0wawIBAQQgQ7SmwoNmZiFYzTF6
+            uHton8YrSz4LsbC3XmQn6qULJkqhRANCAASTs/r/tf+hdnRtbT1nLlMQMUTIumyn
+            1+xzDnu4E0wqrubgBDtsPAgs+VRMgJADHmtJqMO4cFV52yxPazFUnYMc
             -----END PRIVATE KEY-----
             
     peers:
