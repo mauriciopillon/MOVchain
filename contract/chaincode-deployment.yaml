@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: chaincode
-          image: localhost:5000/mychaincode:latest
+          image: mychaincode:latest
           ports:
             - containerPort: 7052
           env:

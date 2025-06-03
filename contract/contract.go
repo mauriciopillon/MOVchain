@@ -22,10 +22,10 @@ type Asset struct {
 // CreateAsset creates a new asset
 func (s *SmartContract) CreateAsset(ctx contractapi.TransactionContextInterface, ID string, name string, greenIndex string, owner string) error {
 	asset := Asset{
-		ID:           ID,
-		Name:         name,
-		GreenIndex    greenIndex,
-		Owner:        owner,
+		ID:            ID,
+		Name:          name,
+		GreenIndex:    greenIndex,
+		Owner:         owner,
 	}
 
 	assetJSON, err := json.Marshal(asset)
