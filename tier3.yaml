@@ -23,27 +23,27 @@ organizations:
         cert:
           pem: |
             -----BEGIN CERTIFICATE-----
-            MIICZTCCAgugAwIBAgIUa/gjYVUEYxNMKV79jKRtRuCgGsYwCgYIKoZIzj0EAwIw
+            MIICZTCCAgugAwIBAgIUWNBKqfIb7lx/X3KCRLrhsFu/x3cwCgYIKoZIzj0EAwIw
             ajELMAkGA1UEBhMCRVMxETAPBgNVBAcTCEFsaWNhbnRlMREwDwYDVQQJEwhBbGlj
             YW50ZTEZMBcGA1UEChMQS3VuZyBGdSBTb2Z0d2FyZTENMAsGA1UECxMEVGVjaDEL
-            MAkGA1UEAxMCY2EwHhcNMjUwNjAyMTI1MzE4WhcNMjYwNjAzMTMzMjAwWjApMQ4w
+            MAkGA1UEAxMCY2EwHhcNMjUwNjAyMTI1MzE4WhcNMjYwNjAzMjIwMjAwWjApMQ4w
             DAYDVQQLEwVhZG1pbjEXMBUGA1UEAxMOZXhwbG9yZXItYWRtaW4wWTATBgcqhkjO
-            PQIBBggqhkjOPQMBBwNCAARLIuD+J9tdAPTxo7IMiNcnKGYvM+TUO2FUlEDL7Orx
-            BelcCBlzystudyW6ATjCdHI3Qg8rZdJljuW6QPDMJInGo4HPMIHMMA4GA1UdDwEB
-            /wQEAwIHgDAMBgNVHRMBAf8EAjAAMB0GA1UdDgQWBBRF49ELbu0rzPy/F7Zyh7FO
-            VM95aTArBgNVHSMEJDAigCC/ctJ+yEfDaOIXExCT+QN9TG9hy+d+dwYmJJY9fDAc
+            PQIBBggqhkjOPQMBBwNCAAQrjmOvdHIPYypjT5ZwaobRelCTyg5LPQdSyMUgz3w4
+            3jxidLQJ5AmIdjMlWXg+79kjPsVQ7hzKHZb08j1YTr3so4HPMIHMMA4GA1UdDwEB
+            /wQEAwIHgDAMBgNVHRMBAf8EAjAAMB0GA1UdDgQWBBSBKoUQZtVveTMIXVdCkG89
+            Q7GiDDArBgNVHSMEJDAigCC/ctJ+yEfDaOIXExCT+QN9TG9hy+d+dwYmJJY9fDAc
             gDBgBggqAwQFBgcIAQRUeyJhdHRycyI6eyJoZi5BZmZpbGlhdGlvbiI6IiIsImhm
             LkVucm9sbG1lbnRJRCI6ImV4cGxvcmVyLWFkbWluIiwiaGYuVHlwZSI6ImFkbWlu
-            In19MAoGCCqGSM49BAMCA0gAMEUCIQCncXFmj0j6DPdydwpV6KP1uPNFQmQFxiJY
-            SRe8Hl8XOQIgDADhAlwWfdG/Khcyxgo4o5i93vsWrBynetPdMPL7Z74=
+            In19MAoGCCqGSM49BAMCA0gAMEUCIQC5s1VZQNSeAQETYQhY2U9zQoU9N53UGtFy
+            RmvzI7HPiAIgcVnp066dHyPqwJz7Es5CD7dZicc1tEPAYrjtl+rKjfo=
             -----END CERTIFICATE-----
             
         key:
           pem: |
             -----BEGIN PRIVATE KEY-----
-            MIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0wawIBAQQg008jH0w3QkMo2yw8
-            MCbC/DLBXoMWv9CnvZ7WMz6aufmhRANCAARLIuD+J9tdAPTxo7IMiNcnKGYvM+TU
-            O2FUlEDL7OrxBelcCBlzystudyW6ATjCdHI3Qg8rZdJljuW6QPDMJInG
+            MIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0wawIBAQQgrIr4asVT7AbNZIwj
+            fnOwY4576L+8B8x4rvN6Q2E7XIGhRANCAAQrjmOvdHIPYypjT5ZwaobRelCTyg5L
+            PQdSyMUgz3w43jxidLQJ5AmIdjMlWXg+79kjPsVQ7hzKHZb08j1YTr3s
             -----END PRIVATE KEY-----
             
     peers:
