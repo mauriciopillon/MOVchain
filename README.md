@@ -4,7 +4,7 @@ Tutorial de como subir a rede para Proof of Concept ESG.
 *Baseado em: [Workshop to create your first HLF network](https://github.com/kfsoftware/meetup-hlf-3-0?tab=readme-ov-file#14-completion).*
 
 ## Extra: Remoção de Dependências
-Caso queira instalar as dependências do zero, use essa parte do tutorial para remover as versões de Docker, Kubectl, Go e KinD que já estão instaladas no seu sistema.
+Caso queira instalar as dependências do zero, use essa parte do tutorial para remover as versões de Docker, Kubernetes, Go e KinD que já estão instaladas no seu sistema.
 
 ### Eliminar Exports (.bashrc & .profile)
 Entre nos arquivos ``.bashrc`` e ``.profile`` e procure pelos ``exports`` inseridos manualmente. Exemplos:
@@ -37,7 +37,7 @@ sudo rm /etc/apt/keyrings/docker.asc
 sudo apt autoremove -y
 ```
 
-### Remoção do Kubectl
+### Remoção do Kubernetes
 Execute os comandos abaixo no terminal:
 ```bash
 sudo apt-get purge kubeadm kubectl kubelet kubernetes-cni kube*
@@ -112,8 +112,8 @@ sudo reboot
 docker ps
 ```
 
-### Instalação Kubectl
-Para instalação do Kubectl faremos:
+### Instalação Kubernetes
+Para instalação do Kubernetes faremos:
 ```bash
 # Download da última versão estável dispoível
 curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
@@ -215,7 +215,7 @@ chmod +x runESG.sh
 > ⚠️ **Atenção:** É possível que alguns erros interrompam a execução do deploy. Caso isso ocorra, abra o arquivo ``runESG.sh`` no editor de texto de sua preferência e comente as linhas, desde o início do script (Indicado por "SCRIPT START") até a última parte executada sem erros. Depois volte ao terminal e execute o arquivo novamente.
 
 ## Interagindo com a Blockchain
-Se todo o deploy ocorrer sem erros, estamos prontos para começar a interagir com a blockchain. Vamos usar o plugin do Kubectl para interagir com o chaincode. O plugin providencia uma interface mais user-friendly. Para facilitar ainda mais as leituras de assets, vamos usar o ``jq`` para manipular JSON's.
+Se todo o deploy ocorrer sem erros, estamos prontos para começar a interagir com a blockchain. Vamos usar o plugin do Kubernetes para interagir com o chaincode. O plugin providencia uma interface mais user-friendly. Para facilitar ainda mais as leituras de assets, vamos usar o ``jq`` para manipular JSON's.
 
 #### Instalação do jq
 ```bash
@@ -229,27 +229,6 @@ sudo apt install jq
 Para demonstrar como interagir com a blockchain iremos utilizar um caso exemplo.
 
 #### Criação de Assets (Escrita)
-```bash
-# == Materia Prima ==============================================
-
-# Cria Ferro - Mineradora
-kubectl hlf chaincode invoke --config=tier3.yaml \
-    --user=tier3-admin-default --peer=mineradora.default \
-    --chaincode=asset --channel=esg-channel \
-    --fcn=CreateAsset -a "ferro1" -a "Ferro Bruto" -a "B" -a "Mineradora"
-
-# Cria Borracha - Borracharia
-kubectl hlf chaincode invoke --config=tier2.yaml \
-    --user=tier2-admin-default --peer=vendedor-pneu.default \
-    --chaincode=asset --channel=esg-channel \
-    --fcn=CreateAsset -a "borracha1" -a "Borracha Natural" -a "A" -a "Borracharia"
-
-# Cria Plástico - Fábrica de Polímeros
-kubectl hlf chaincode invoke --config=tier2.yaml \
-    --user=tier2-admin-default --peer=vendedor-pneu.default \
-    --chaincode=asset --channel=esg-channel \
-    --fcn=CreateAsset -a "plastico1" -a "Polímero ABS" -a "C" -a "Fabrica_Polimeros"
-```
 ```bash
 # == Matéria-Prima ==============================================
 
