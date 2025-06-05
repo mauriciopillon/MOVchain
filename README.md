@@ -4,7 +4,7 @@ Tutorial de como subir a rede para Proof of Concept ESG.
 *Baseado em: [Workshop to create your first HLF network](https://github.com/kfsoftware/meetup-hlf-3-0?tab=readme-ov-file#14-completion).*
 
 ## Extra: Remoção de Dependências
-Caso queira instalar as dependências do zero, use essa parte do tutorial para remover as versões de Docker, Kubernetes, Go e KinD que já estão instaladas no seu sistema.
+Caso queira instalar as dependências do zero, use essa parte do tutorial para remover as versões de Docker, Kubernetes, Go e Kind que já estão instaladas no seu sistema.
 
 ### Eliminar Exports (.bashrc & .profile)
 Entre nos arquivos ``.bashrc`` e ``.profile`` e procure pelos ``exports`` inseridos manualmente. Exemplos:
@@ -54,7 +54,7 @@ sudo rm -rf /usr/local/go
 sudo rm -rf ~/go
 ```
 
-### Remoção do KinD
+### Remoção do Kind
 Execute os comandos abaixo no terminal:
 ```bash
 # Caso instalado com Go:
@@ -144,7 +144,7 @@ source ~/.bashrc
 go version
 ```
 
-### Instalação KinD (usando o Go)
+### Instalação Kind (usando o Go)
 Para instalação do KinD faremos:
 ```bash
 # Instale kind
@@ -215,7 +215,7 @@ chmod +x runESG.sh
 > ⚠️ **Atenção:** É possível que alguns erros interrompam a execução do deploy. Caso isso ocorra, abra o arquivo ``runESG.sh`` no editor de texto de sua preferência e comente as linhas, desde o início do script (Indicado por "SCRIPT START") até a última parte executada sem erros. Depois volte ao terminal e execute o arquivo novamente.
 
 ## Interagindo com a Blockchain
-Se todo o deploy ocorrer sem erros, estamos prontos para começar a interagir com a blockchain. Vamos usar o plugin do Kubernetes para interagir com o chaincode. O plugin providencia uma interface mais user-friendly. Para facilitar ainda mais as leituras de assets, vamos usar o ``jq`` para manipular JSON's.
+Se todo o deploy ocorrer sem erros, estamos prontos para começar a interagir com a blockchain. Vamos usar o plugin HLF-Operator do Kubernetes para interagir com o chaincode. O plugin providencia uma interface mais user-friendly. Para facilitar ainda mais as leituras de assets, vamos usar o ``jq`` para manipular JSON's.
 
 #### Instalação do jq
 ```bash
