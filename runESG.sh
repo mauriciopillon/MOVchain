@@ -75,69 +75,69 @@ create_identity() {
     --ca=$ca_type --mspid=$mspid --enroll-id=$enroll_id --enroll-secret=$secret
 }
 
-# ========== SCRIPT START ==========
-
-info "Creating cluster..."
-kind delete cluster --name kind || true
-kind create cluster --config=./kind-config.yaml
-
-info "Installing Istio in k8s cluster..."
-kubectl create namespace istio-system || true
-istioctl operator init
-kubectl apply -f ./istio-config.yaml
-kubectl apply -f ./istio-configmap.yaml
-
-info "Installing HLF operator..."
-helm repo add kfs https://kfsoftware.github.io/hlf-helm-charts --force-update
-helm upgrade --install hlf-operator --version=$HLF_OPERATOR_VERSION -- kfs/hlf-operator
-
-# ========== TIER 1 CA + PEERS ==========
-
-info "Creating Tier 1 CA..."
-create_ca "tier1-ca" "tier1-ca.localho.st"
-wait_for_running fabriccas.hlf.kungfusoftware.es
-
-info "Testing Tier 1 CA..."
-curl -k https://tier1-ca.localho.st:443/cainfo
-
-info "Registering peer identity..."
-register_user "tier1-ca" "peer" "peerpw" "peer" "Tier1MSP"
-
-info "Deploying Tier 1 peers..."
-create_peer "montadora" "montadora.localho.st" "tier1"
-wait_for_running fabricpeers.hlf.kungfusoftware.es
-
-# ========== TIER 2 CA + PEERS ==========
-
-info "Creating Tier 2 CA..."
-create_ca "tier2-ca" "tier2-ca.localho.st"
-wait_for_running fabriccas.hlf.kungfusoftware.es
-
-info "Testing Tier 2 CA..."
-curl -k https://tier2-ca.localho.st:443/cainfo
-
-info "Registering peer identity..."
-register_user "tier2-ca" "peer" "peerpw" "peer" "Tier2MSP"
-
-info "Deploying Tier 2 peers..."
-create_peer "vendedor-pneu" "vendedor-pneu.localho.st" "tier2"
-wait_for_running fabricpeers.hlf.kungfusoftware.es
-
-# ========== TIER 3 CA + PEERS ==========
-
-info "Creating Tier 3 CA..."
-sleep 120
-create_ca "tier3-ca" "tier3-ca.localho.st"
-wait_for_running fabriccas.hlf.kungfusoftware.es
-
-info "Testing Tier 3 CA..."
-curl -k https://tier3-ca.localho.st:443/cainfo
-
-info "Registering peer identity..."
-register_user "tier3-ca" "peer" "peerpw" "peer" "Tier3MSP"
-
-info "Deploying Tier3 peers..."
-create_peer "mineradora" "mineradora.localho.st" "tier3"
+## ========== SCRIPT START ==========
+#
+#info "Creating cluster..."
+#kind delete cluster --name kind || true
+#kind create cluster --config=./kind-config.yaml
+#
+#info "Installing Istio in k8s cluster..."
+#kubectl create namespace istio-system || true
+#istioctl operator init
+#kubectl apply -f ./istio-config.yaml
+#kubectl apply -f ./istio-configmap.yaml
+#
+#info "Installing HLF operator..."
+#helm repo add kfs https://kfsoftware.github.io/hlf-helm-charts --force-update
+#helm upgrade --install hlf-operator --version=$HLF_OPERATOR_VERSION -- kfs/hlf-operator
+#
+## ========== TIER 1 CA + PEERS ==========
+#
+#info "Creating Tier 1 CA..."
+#create_ca "tier1-ca" "tier1-ca.localho.st"
+#wait_for_running fabriccas.hlf.kungfusoftware.es
+#
+#info "Testing Tier 1 CA..."
+#curl -k https://tier1-ca.localho.st:443/cainfo
+#
+#info "Registering peer identity..."
+#register_user "tier1-ca" "peer" "peerpw" "peer" "Tier1MSP"
+#
+#info "Deploying Tier 1 peers..."
+#create_peer "montadora" "montadora.localho.st" "tier1"
+#wait_for_running fabricpeers.hlf.kungfusoftware.es
+#
+## ========== TIER 2 CA + PEERS ==========
+#
+#info "Creating Tier 2 CA..."
+#create_ca "tier2-ca" "tier2-ca.localho.st"
+#wait_for_running fabriccas.hlf.kungfusoftware.es
+#
+#info "Testing Tier 2 CA..."
+#curl -k https://tier2-ca.localho.st:443/cainfo
+#
+#info "Registering peer identity..."
+#register_user "tier2-ca" "peer" "peerpw" "peer" "Tier2MSP"
+#
+#info "Deploying Tier 2 peers..."
+#create_peer "vendedor-pneu" "vendedor-pneu.localho.st" "tier2"
+#wait_for_running fabricpeers.hlf.kungfusoftware.es
+#
+## ========== TIER 3 CA + PEERS ==========
+#
+#info "Creating Tier 3 CA..."
+#sleep 120
+#create_ca "tier3-ca" "tier3-ca.localho.st"
+#wait_for_running fabriccas.hlf.kungfusoftware.es
+#
+#info "Testing Tier 3 CA..."
+#curl -k https://tier3-ca.localho.st:443/cainfo
+#
+#info "Registering peer identity..."
+#register_user "tier3-ca" "peer" "peerpw" "peer" "Tier3MSP"
+#
+#info "Deploying Tier3 peers..."
+#create_peer "mineradora" "mineradora.localho.st" "tier3"
 wait_for_running fabricpeers.hlf.kungfusoftware.es
 
 # ========== ORDERER CA + ORDERERS ==========

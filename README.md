@@ -205,6 +205,9 @@ export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
 O próximo passo é executar o script ``run.sh`` personalizado para ESG.
 
 ```bash
+# Entrar no diretório
+cd pocESG
+
 # Tornar o script de deploy executável
 chmod +x runESG.sh
 
